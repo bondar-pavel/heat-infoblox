@@ -50,6 +50,7 @@ class GridMember(resource.Resource):
         DNS_DTC_HEALTH_SOURCE, DNS_DTC_HEALTH_SOURCE_ADDRESS,
         DNS_RPZ_QNAME_WAIT_RECURSE, DNS_USE_RPZ_QNAME_WAIT_RECURSE,
         DNS_LOG_DTC_GSLB, DNS_LOG_DTC_HEALTH, DNS_UNBOUND_LOGGING_LEVEL,
+        ADDITIONAL_IP_LIST,
     ) = (
         'name', 'model', 'licenses', 'temp_licenses',
         'remote_console_enabled', 'admin_password',
@@ -62,6 +63,7 @@ class GridMember(resource.Resource):
         'dtc_health_source', 'dtc_health_source_address',
         'rpz_qname_wait_recurse', 'use_rpz_qname_wait_recurse',
         'log_dtc_glsb', 'log_dtc_health', 'unbound_logging_level',
+        'additional_ip_list',
     )
 
     ATTRIBUTES = (
@@ -178,6 +180,15 @@ class GridMember(resource.Resource):
                     _('If true, enable DNS on this member.'),
                     default=False
                 ),
+                ADDITIONAL_IP_LIST: properties.Schema(
+                    properties.Schema.LIST,
+                    _('List of additional IP addresses on which DNS is '
+                      'enabled for a Grid member.'),
+                    schema=properties.Schema(
+                        properties.Schema.STRING
+                    ),
+                    default=[]
+                ),
             })
     }
 
@@ -255,7 +266,8 @@ class GridMember(resource.Resource):
         if dns:
             self.infoblox().configure_member_dns(
                 name,
-                enable_dns=dns['enable']
+                enable_dns=dns['enable'],
+                additional_ip_list=dns[self.ADDITIONAL_IP_LIST],
             )
 
         self.resource_id_set(name)

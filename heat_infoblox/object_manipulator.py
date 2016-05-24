@@ -78,8 +78,11 @@ class InfobloxObjectManipulator(object):
                                      extra_data)
 
     def configure_member_dns(self, member_name,
-                             enable_dns=False):
-        extra_data = {'enable_dns': enable_dns}
+                             enable_dns=False, additional_ip_list=None):
+        if additional_ip_list is None:
+            additional_ip_list = []
+        extra_data = {'enable_dns': enable_dns,
+                      'additional_ip_list': additional_ip_list}
         self._update_infoblox_object('member:dns', {'host_name': member_name},
                                      extra_data)
 

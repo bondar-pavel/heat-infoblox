@@ -17,6 +17,10 @@ parameters:
     type: string
     description: the external network for floating IP allocations
     default: public
+  additional_ip_list:
+    type: comma_delimited_list
+    description: comma delimited list of additional IP addresses on which DNS is enabled
+    default: ""
 resources:
   host_name:
     type: OS::Heat::RandomString
@@ -71,7 +75,8 @@ resources:
       MGMT: { get_resource: mgmt_port }
       LAN1: { get_resource: lan1_port }
       LAN2: { get_resource: lan2_port }
-      dns: { enable: True }
+      dns: { enable: True,
+             additional_ip_list: { get_param: additional_ip_list }}
       licenses: ["vnios", "dns", "enterprise"]
 # If you do not have a license pool and want to use temp licenses instead,
 # uncomment the line below
